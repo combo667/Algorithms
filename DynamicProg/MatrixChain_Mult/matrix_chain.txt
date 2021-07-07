@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#define max 5
+
+void MCM(int, int[]);
+void PRINT_OPTIMAL_PARENS(int S[max][max], int, int);
+void input(int);
+
+int main(int argc, char const *argv[])
+{
+
+    int p[] = {5, 4, 6, 2, 7};
+    int n = 5;
+
+    MCM(n, p);
+
+    return 0;
+}
+
+void MCM(int size, int dim[])
+{
+
+    int M[size][size];
+    int S[size][size];
+    int x = 0, y = 0;
+    int i = 0, j = 0, d = 0, k = 0;
+    int minimum = 0, q = 0;
+
+    for (x = 0; x < 5; x++)
+    {
+        for (y = 0; y < 5; y++)
+        {
+            M[x][y] = 0;
+            S[x][y] = 0;
+        }
+    }
+
+    for (d = 1; d < (size - 1); d++)
+    {
+        for (i = 1; i < (size - d); i++)
+        {
+            j = i + d;
+            minimum = INT_MAX;
+            for (k = i; k <= j - 1; ++k)
+            {
+                q = M[i][k] + M[k + 1][j] + (dim[i - 1] * dim[k] * dim[j]);
+                if (q < minimum)
+                {
+                    minimum = q;
+                    S[i][j] = k;
+                }
+            }
+
+            M[i][j] = minimum;
+        }
+    }
+
+    PRINT_OPTIMAL_PARENS(S, 1, size - 1);
+}
+
+void PRINT_OPTIMAL_PARENS(int S[max][max], int i, int j)
+{
+    if (i == j)
+        printf("A%d", i);
+    else
+    {
+        printf("(");
+        PRINT_OPTIMAL_PARENS(S, i, S[i][j]);
+        PRINT_OPTIMAL_PARENS(S, S[i][j] + 1, j);
+        printf(")");
+    }
+}
